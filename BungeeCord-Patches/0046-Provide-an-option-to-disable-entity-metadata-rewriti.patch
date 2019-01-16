@@ -1,4 +1,4 @@
-From 6020f1a82b669ee813e7586276d7c8d0fe05b773 Mon Sep 17 00:00:00 2001
+From c8244c9cb52fb17aae2f38a5abbdeaf99abbca6d Mon Sep 17 00:00:00 2001
 From: Shane Freeder <theboyetronic@gmail.com>
 Date: Mon, 14 Jan 2019 03:35:21 +0000
 Subject: [PATCH] Provide an option to disable entity metadata rewriting
@@ -58,7 +58,7 @@ index ea06f3ba..d9ea75ca 100644
 +    }
  }
 diff --git a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
-index c7f081d4..5c8469c9 100644
+index c7f081d4..110ac496 100644
 --- a/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 +++ b/proxy/src/main/java/net/md_5/bungee/ServerConnector.java
 @@ -225,7 +225,7 @@ public class ServerConnector extends PacketHandler
@@ -78,23 +78,15 @@ index c7f081d4..5c8469c9 100644
              for ( Objective objective : serverScoreboard.getObjectives() )
              {
                  user.unsafe().sendPacket( new ScoreboardObjective( objective.getName(), objective.getValue(), ScoreboardObjective.HealthDisplay.fromString( objective.getType() ), (byte) 1 ) );
-@@ -271,25 +272,43 @@ public class ServerConnector extends PacketHandler
+@@ -271,6 +272,7 @@ public class ServerConnector extends PacketHandler
              {
                  user.unsafe().sendPacket( new net.md_5.bungee.protocol.packet.Team( team.getName() ) );
              }
 +            } // Waterfall
              serverScoreboard.clear();
  
-+            if ( !user.isDisableEntityMetadataRewrite() ) { // Waterfall
              for ( UUID bossbar : user.getSentBossBars() )
-             {
-                 // Send remove bossbar packet
-                 user.unsafe().sendPacket( new net.md_5.bungee.protocol.packet.BossBar( bossbar, 1 ) );
-             }
-+            } // Waterfall
-             user.getSentBossBars().clear();
- 
-             // Update debug info from login packet
+@@ -284,12 +286,27 @@ public class ServerConnector extends PacketHandler
              user.unsafe().sendPacket( new EntityStatus( user.getClientEntityId(), login.isReducedDebugInfo() ? EntityStatus.DEBUG_INFO_REDUCED : EntityStatus.DEBUG_INFO_NORMAL ) );
  
              user.setDimensionChange( true );
